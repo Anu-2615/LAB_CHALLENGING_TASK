@@ -1,0 +1,307 @@
+
+LAB CHALLENGING TASK
+
+
+
+*ACTIVITY -1* 
+
+#include <iostream>
+#include <string>
+
+class BankAccount {
+private:
+    std::string depositorName;
+    int accountNumber;
+    std::string accountType;
+    double balance;
+
+public:
+    // Constructor to provide initial values
+    BankAccount(std::string name, int number, std::string type, double initialBalance) {
+        depositorName = name;
+        accountNumber = number;
+        accountType = type;
+        balance = initialBalance;
+    }
+
+    // Method to assign initial values
+    void setAccountDetails(std::string name, int number, std::string type, double initialBalance) {
+        depositorName = name;
+        accountNumber = number;
+        accountType = type;
+        balance = initialBalance;
+    }
+
+    // Method to deposit an amount
+    void deposit(double amount) {
+        balance += amount;
+        std::cout << "Deposit Successful. New balance: " << balance << std::endl;
+    }
+
+    // Method to withdraw an amount after checking balance
+    void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            std::cout << "Withdrawal Successful. New balance: " << balance << std::endl;
+        } else {
+            std::cout << "Insufficient balance. Withdrawal failed." << std::endl;
+        }
+    }
+
+    // Method to display the name and balance
+    void displayAccountDetails() {
+        std::cout << "Account Holder: " << depositorName << std::endl;
+        std::cout << "Account Number: " << accountNumber << std::endl;
+        std::cout << "Account Type: " << accountType << std::endl;
+        std::cout << "Balance: " << balance << std::endl;
+    }
+};
+
+int main() {
+    BankAccount account1("John Doe", 123456, "Savings", 1000.0);
+
+    account1.displayAccountDetails();
+
+    account1.deposit(500.0);
+    account1.withdraw(200.0);
+
+    account1.displayAccountDetails();
+
+    return 0;
+}
+
+
+*ACTIVITY - 2* 
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    srand(static_cast<unsigned int>(time(0))); // seed random number generator
+    int numberToGuess = rand() % 1000 + 1; // generate a random number between 1 and 1000
+    int guess;
+    char playAgain;
+
+    do {
+        std::cout << "I have a number between 1 and 1000.\n";
+        std::cout << "Can you guess my number?\n";
+        std::cout << "Please type your first guess.\n";
+
+        while (true) {
+            std::cin >> guess;
+
+            if (guess < numberToGuess) {
+                std::cout << "Too low. Try again.\n";
+            } else if (guess > numberToGuess) {
+                std::cout << "Too high. Try again.\n";
+            } else {
+                std::cout << "Excellent! You guessed the number!\n";
+                break;
+            }
+        }
+
+        std::cout << "Would you like to play again (y or n)?\n";
+        std::cin >> playAgain;
+    } while (playAgain == 'y' || playAgain == 'Y');
+
+    std::cout << "Thanks for playing!\n";
+    return 0;
+}
+
+
+*ACTIVITY - 3*
+
+#include <iostream>
+#include <string>
+#include <cmath>  // 
+using namespace std;
+
+class Account {
+protected:
+    string customerName;
+    int accountNumber;
+    string accountType;
+    double balance;
+
+public:
+    void initializeAccount(string name, int accNum, string accType, double bal) {
+        customerName = name;
+        accountNumber = accNum;
+        accountType = accType;
+        balance = bal;
+    }
+
+    void deposit(double amount) {
+        balance += amount;
+        cout << "Amount deposited: " << amount << endl;
+        cout << "Updated balance: " << balance << endl;
+    }
+
+    void displayBalance() const {
+        cout << "Current balance: " << balance << endl;
+    }
+};
+
+class SavAcct : public Account {
+public:
+    void computeInterest(double rate, int time) {
+        double interest = balance * pow( (1 + rate / 100);, time) - balance;
+        balance += interest;
+        cout << "Interest computed and added: " << interest << endl;
+        cout << "Updated balance: " << balance << endl;
+    }
+
+    void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Amount withdrawn: " << amount << endl;
+            cout << "Updated balance: " << balance << endl;
+        } else {
+            cout << "Insufficient balance for withdrawal!" << endl;
+        }
+    }
+};
+
+class CurrAcct : public Account {
+private:
+    double minimumBalance;
+    double serviceCharge;
+
+public:
+    void initializeAccount(string name, int accNum, string accType, double bal, double minBal, double srvCharge) {
+        Account::initializeAccount(name, accNum, accType, bal);
+        minimumBalance = minBal;
+        serviceCharge = srvCharge;
+    }
+
+    void withdraw(double amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Amount withdrawn: " << amount << endl;
+            checkMinimumBalance();
+        } else {
+            cout << "Insufficient balance for withdrawal!" << endl;
+        }
+    }
+
+    void checkMinimumBalance() {
+        if (balance < minimumBalance) {
+            balance -= serviceCharge;
+            cout << "Balance below minimum. Service charge imposed: " << serviceCharge << endl;
+        }
+        cout << "Updated balance: " << balance << endl;
+    }
+};
+
+int main() {
+    SavAcct savings;
+    CurrAcct current;
+
+    string name;
+    int accNum, time;
+    double initialBalance, depositAmount, withdrawAmount, interestRate, minBalance, serviceCharge;
+
+    cout << "Enter customer name: ";
+    getline(cin, name);
+
+    cout << "Enter account number: ";
+    cin >> accNum;
+
+    cout << "Enter initial balance: ";
+    cin >> initialBalance;
+
+    cout << "Creating a Savings Account...\n";
+    savings.initializeAccount(name, accNum, "Savings", initialBalance);
+
+    cout << "\nEnter deposit amount: ";
+    cin >> depositAmount;
+    savings.deposit(depositAmount);
+
+    cout << "\nEnter interest rate and time (in years): ";
+    cin >> interestRate >> time;
+    savings.computeInterest(interestRate, time);
+
+    cout << "\nEnter amount to withdraw: ";
+    cin >> withdrawAmount;
+    savings.withdraw(withdrawAmount);
+    savings.displayBalance();
+
+    cout << "\nCreating a Current Account...\n";
+    cout << "Enter minimum balance: ";
+    cin >> minBalance;
+
+    cout << "Enter service charge: ";
+    cin >> serviceCharge;
+
+    current.initializeAccount(name, accNum + 1, "Current", initialBalance, minBalance, serviceCharge);
+
+    cout << "\nEnter deposit amount: ";
+    cin >> depositAmount;
+    current.deposit(depositAmount);
+
+    cout << "\nEnter amount to withdraw: ";
+    cin >> withdrawAmount;
+    current.withdraw(withdrawAmount);
+    current.displayBalance();
+
+    return 0;
+
+   }
+
+
+
+*ACTIVITY - 4*
+
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    int votes[5] = {0}; // Initialize an array to store votes for each candidate
+    int spoiltBallots = 0; // Initialize a variable to count spoilt ballots
+    int totalBallots = 0; // Initialize a variable to count total ballots
+
+    cout << "Enter the ballots (1-5), enter 0 to finish voting: ";
+    int ballot;
+    while (true) {
+        cin >> ballot;
+        if (ballot == 0) break; // Exit the loop when 0 is entered
+        totalBallots++; // Increment total ballots
+
+        if (ballot < 1 || ballot > 5) {
+            spoiltBallots++; // Increment spoilt ballots if the input is outside the range 1-5
+        } else {
+            votes[ballot - 1]++; // Increment the vote count for the corresponding candidate
+        }
+    }
+
+    cout << "Voting results:" << endl;
+    for (int i = 0; i < 5; i++) {
+        cout << "Candidate " << i + 1 << ": " << votes[i] << " votes" << endl;
+    }
+    cout << "Spoilt ballots: " << spoiltBallots << endl;
+    cout << "Total ballots: " << totalBallots << endl;
+
+    return 0;
+}
+
+
+
+*ACTIVITY - 5* 
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+
+int main() {
+    std::string input;
+    std::cout << "Enter a string: ";
+    std::getline(std::cin, input);
+
+    std::sort(input.begin(), input.end());
+
+    std::cout << "Alphabetical order: " << input << std::endl;
+
+    return 0;
+}
